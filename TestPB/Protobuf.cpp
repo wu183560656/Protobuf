@@ -107,11 +107,11 @@ namespace pb
 		return IsUTF8;
 	}
 
-	inline int Uint64_t::SetValue(const char* buffer, int buffer_len)
+	int Uint64_t::SetValue(const char* buffer, int buffer_len)
 	{
 		return pb_read_varint(buffer, buffer_len, *(uint64_t*)m_Value);
 	}
-	inline std::string Uint64_t::ToString()
+	std::string Uint64_t::ToString()
 	{
 		std::string result;
 		pb_write_varint(result, *(uint64_t*)m_Value);

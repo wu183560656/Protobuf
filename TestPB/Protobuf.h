@@ -128,7 +128,7 @@ namespace pb
 		Protobuf& operator=(const Protobuf& _that);
 		bool operator==(const PB_TYPE& type);
 		Protobuf& operator+=(const Protobuf& _that);
-		//格式:(O|A)(number){I|D|F|A|O|B}  ():必须,{}可选
+		//index_src格式:(O|A):(number){I|D|F|A|O|B}  ():必须,{}可选
 		//I:Uint64，D:Fixed64，F:Fixed32，A:Array，O:Object，B:Bytes
 		//(O|A):表示将当前Protobuf格式化成什么格式
 		//(number):表示取Object中tag=number或Array中的index=number

@@ -23,7 +23,7 @@ namespace pb
 		return -1;
 	}
 
-	int pb_write_varint(std::string& buf, uint64_t value)
+	static int pb_write_varint(std::string& buf, uint64_t value)
 	{
 		int len = 0;
 		while (value != 0)

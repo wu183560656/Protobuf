@@ -218,7 +218,7 @@ namespace pb
 		this->m_Value.Array.Items().push_back(_that);
 		return *this;
 	}
-	Protobuf& Protobuf::operator[] (std::string array_index)
+	Protobuf& Protobuf::operator[] (std::string index_src)
 	{
 		if (this == nullptr)
 		{
@@ -226,7 +226,7 @@ namespace pb
 		}
 		std::regex reg(R"(^([oOaA]{1})\:(\d+)([iIdDfFaAoObB]?)$)");
 		std::smatch m;
-		if (std::regex_search(array_index, m, reg) && m.size() <= 0)
+		if (std::regex_search(index_src, m, reg) && m.size() <= 0)
 		{
 			return *(Protobuf*)nullptr;
 		}

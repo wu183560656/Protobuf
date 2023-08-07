@@ -131,9 +131,9 @@ namespace pb
 		//格式:(O|A)(number){I|D|F|A|O|B}  ():必须,{}可选
 		//I:Uint64，D:Fixed64，F:Fixed32，A:Array，O:Object，B:Bytes
 		//(O|A):表示将当前Protobuf格式化成什么格式
-		//number:表示取Object中tag=number或Array中的index=number
+		//(number):表示取Object中tag=number或Array中的index=number
 		//{I|D|F|A|O|B}:表示取出后的数据应该是什么格式
-		Protobuf& operator[] (std::string array_index);
+		Protobuf& operator[] (std::string index_src);
 		Protobuf(uint64_t value);
 		Protobuf(double value);
 		Protobuf(float value);
@@ -145,7 +145,6 @@ namespace pb
 		Fixed64_t& Fixed64();
 		Fixed32_t& Fixed32();
 		Binary_t& Binary();
-		//数组编码时是否使用Packed
 		Array_t& Array();
 		Object_t& Object();
 		//转换为字符串视图
@@ -163,13 +162,9 @@ namespace pb
 		bool SetValueByPath(const std::string path, float value);
 		bool SetValueByPath(const std::string path, std::string value);
 	private:
-		//非Binary类型转换为Binary类型
 		void ToBinary();
-		//Binary类型转换为Object类型
 		bool ToObject();
-		//转换为数组
 		bool ToArray(PB_TYPE item_type);
-		//带Tag转换
 		std::string ToBinaryAsTag(uint64_t tag);
 		std::string ToViewAsTitle(std::string title, bool brevity);
 		PB_TYPE m_Type;

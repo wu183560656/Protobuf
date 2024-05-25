@@ -7,10 +7,10 @@ namespace pb
 		uint64_t tmpValue = 0;
 		for (int index = 0; index <= 9 && index < datalen;)
 		{
-			uint64_t temp = pbdata[index++];
+			uint64_t temp = (unsigned char)pbdata[index++];
 			if (index == 9 && temp & 0b00000001)
 			{
-				//µ⁄ Æ∏ˆ◊÷Ω⁄÷ª”–“ªŒª
+				//Á¨¨ÂçÅ‰∏™Â≠óËäÇÂè™Êúâ‰∏Ä‰Ωç
 				break;
 			}
 			tmpValue |= (temp & 0b01111111) << ((index - 1) * 7);
@@ -59,16 +59,16 @@ namespace pb
 		unsigned char* end = (unsigned char*)pBuffer + size;
 		while (start < end)
 		{
-			if (*start < 0x80) // (10000000): ÷µ–°”⁄0x80µƒŒ™ASCII◊÷∑˚
+			if (*start < 0x80) // (10000000): ÂÄºÂ∞è‰∫é0x80ÁöÑ‰∏∫ASCIIÂ≠óÁ¨¶
 			{
 				start++;
 			}
-			else if (*start < (0xC0)) // (11000000): ÷µΩÈ”⁄0x80”Î0xC0÷Æº‰µƒŒ™Œﬁ–ßUTF-8◊÷∑˚
+			else if (*start < (0xC0)) // (11000000): ÂÄº‰ªã‰∫é0x80‰∏é0xC0‰πãÈó¥ÁöÑ‰∏∫Êó†ÊïàUTF-8Â≠óÁ¨¶
 			{
 				IsUTF8 = false;
 				break;
 			}
-			else if (*start < (0xE0)) // (11100000): ¥À∑∂Œßƒ⁄Œ™2◊÷Ω⁄UTF-8◊÷∑˚
+			else if (*start < (0xE0)) // (11100000): Ê≠§ËåÉÂõ¥ÂÜÖ‰∏∫2Â≠óËäÇUTF-8Â≠óÁ¨¶
 			{
 				if (start >= end - 1)
 				{
@@ -83,7 +83,7 @@ namespace pb
 
 				start += 2;
 			}
-			else if (*start < (0xF0)) // (11110000): ¥À∑∂Œßƒ⁄Œ™3◊÷Ω⁄UTF-8◊÷∑˚
+			else if (*start < (0xF0)) // (11110000): Ê≠§ËåÉÂõ¥ÂÜÖ‰∏∫3Â≠óËäÇUTF-8Â≠óÁ¨¶
 			{
 				if (start >= end - 2)
 				{
@@ -163,7 +163,7 @@ namespace pb
 	Protobuf& Protobuf::operator=(const Protobuf& _that)
 	{
 		this->m_Type = _that.m_Type;
-		//∏≥÷µ∫Ø ˝“™øº¬«:this=this->item
+		//ËµãÂÄºÂáΩÊï∞Ë¶ÅËÄÉËôë:this=this->item
 		switch (_that.m_Type)
 		{
 		case PB_TYPE::PB_TYPE_VARINT:
@@ -413,13 +413,13 @@ namespace pb
 			this->m_Value.Binary.clear();
 			if (this->m_Value.Array.Items().size() > 0)
 			{
-				//÷ª”–PB_TYPE_VARINT,PB_TYPE_FIXED64,PB_TYPE_FIXED32¿‡–Õ≤≈÷ß≥÷Packed
+				//Âè™ÊúâPB_TYPE_VARINT,PB_TYPE_FIXED64,PB_TYPE_FIXED32Á±ªÂûãÊâçÊîØÊåÅPacked
 				if ((this->m_Value.Array.Items()[0].m_Type == PB_TYPE::PB_TYPE_VARINT ||
 					this->m_Value.Array.Items()[0].m_Type == PB_TYPE::PB_TYPE_FIXED64 ||
 					this->m_Value.Array.Items()[0].m_Type == PB_TYPE::PB_TYPE_FIXED32)
 					&& this->m_Value.Array.Packed())
 				{
-					//ƒ⁄¥Ê≈≈¡–:tag|total_size|item0|item1|item2...
+					//ÂÜÖÂ≠òÊéíÂàó:tag|total_size|item0|item1|item2...
 					this->ToBinary();
 					pb_write_varint(result, pb_maketagnum(tag, this->m_Type));
 					pb_write_varint(result, this->m_Value.Binary.length());
@@ -427,7 +427,7 @@ namespace pb
 				}
 				else
 				{
-					//ƒ⁄¥Ê≈≈¡–:tag|item0_size|item0|tag|item1_size|item1|tag|item2_size|item2...
+					//ÂÜÖÂ≠òÊéíÂàó:tag|item0_size|item0|tag|item1_size|item1|tag|item2_size|item2...
 					for (auto& Item : this->m_Value.Array.Items())
 					{
 						Protobuf ItemBin = Item.ToBinaryAsTag(tag);
@@ -495,9 +495,13 @@ namespace pb
 			{
 				break;
 			}
-			else if (this->ToArray(PB_TYPE::PB_TYPE_VARINT) || this->ToArray(PB_TYPE::PB_TYPE_FIXED64) || this->ToArray(PB_TYPE::PB_TYPE_FIXED32))
+			//‰∏çÂÖÅËÆ∏Â∞ÜÁ¨¨‰∏ÄÂ±ÇËΩ¨Êç¢‰∏∫Êï∞ÁªÑ
+			else if (title != "")
 			{
-				result += "\r\n" + ToViewAsTitle(title, brevity);
+				if (this->ToArray(PB_TYPE::PB_TYPE_VARINT) || this->ToArray(PB_TYPE::PB_TYPE_FIXED64) || this->ToArray(PB_TYPE::PB_TYPE_FIXED32))
+				{
+					result += "\r\n" + ToViewAsTitle(title, brevity);
+				}
 			}
 			break;
 		}
@@ -586,7 +590,7 @@ namespace pb
 		}
 		case PB_TYPE::PB_TYPE_ARRAY:
 		{
-			//’‚÷ª¥¶¿ÌPacked
+			//ËøôÂè™Â§ÑÁêÜPacked
 			this->m_Value.Binary.clear();
 			for (auto& Item : this->m_Value.Array.Items())
 			{
@@ -639,7 +643,7 @@ namespace pb
 				uint64_t tag = varint >> 3;
 				pos += varint_len;
 				auto find_item = this->m_Value.Object.find(tag);
-				//∏˘æ›¿‡–ÕΩ‚Œˆ ˝æ›
+				//Ê†πÊçÆÁ±ªÂûãËß£ÊûêÊï∞ÊçÆ
 				switch (varint & 0b111)
 				{
 				case 0:
@@ -894,7 +898,7 @@ namespace pb
 		Protobuf* the_item = &item->second;
 		if (m[3] != "")
 		{
-			// ˝◊È¥¶¿Ì
+			//Êï∞ÁªÑÂ§ÑÁêÜ
 			unsigned index = atoi(m[3].str().c_str());
 			if (item->second.m_Type != PB_TYPE::PB_TYPE_ARRAY && item->second.m_Type != PB_TYPE::PB_TYPE_BINARY)
 			{
@@ -903,7 +907,7 @@ namespace pb
 			if (item->second.m_Type == PB_TYPE::PB_TYPE_BINARY)
 			{
 				PB_TYPE the_type = m[4] == "" ? des_type : PB_TYPE::PB_TYPE_BINARY;
-				//÷ª”–PB_TYPE_VARINT,PB_TYPE_FIXED64,PB_TYPE_FIXED32¿‡–Õ≤≈÷ß≥÷Packed
+				//Âè™ÊúâPB_TYPE_VARINT,PB_TYPE_FIXED64,PB_TYPE_FIXED32Á±ªÂûãÊâçÊîØÊåÅPacked
 				if (the_type != PB_TYPE::PB_TYPE_VARINT && the_type != PB_TYPE::PB_TYPE_FIXED64 && the_type != PB_TYPE::PB_TYPE_FIXED32)
 				{
 					return *(Protobuf*)nullptr;
